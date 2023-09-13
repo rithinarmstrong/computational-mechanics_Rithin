@@ -5,12 +5,13 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
+
 ```{code-cell} ipython3
 import numpy as np
 import matplotlib.pyplot as plt
@@ -32,17 +33,29 @@ min later the temperature is 80$^{o}$F.
 
 Assume ambient temperature is a constant 65$^{o}$F.
 
-1. Use Python to calculate $K$ using a finite difference approximation, $\frac{dT}{dt} \approx \frac{T(t+\Delta t)-T(t)}{\Delta t}$. 
+1. Use Python to calculate $K$ using a finite difference approximation, $\frac{dT}{dt} \approx \frac{T(t+\Delta t)-T(t)}{\Delta t}$.
 
 ```{code-cell} ipython3
+Tempi=85
+Tempf=80
+Timei=1100
+Timef=1145
+DeltaT=(Timef-Timei)/60
+DT=(80-85)/(DeltaT)
+K=DT/(20)*-1
+K
 ```
 
-2. Change your work from problem 1 to create a function that accepts the temperature at two times, ambient temperature, and the time elapsed to return $K$. 
+2. Change your work from problem 1 to create a function that accepts the temperature at two times, ambient temperature, and the time elapsed to return $K$.
 
 ```{code-cell} ipython3
+def return_K(T0=85,T1=80,deltat=45/60,TA=65):
+    return -(T1-T0)/deltat/(T0-TA)
+return_K(deltat=45/60)
 ```
 
 ```{code-cell} ipython3
+
 ```
 
 3. A first-order thermal system has the following analytical solution, 
@@ -58,4 +71,21 @@ Assume ambient temperature is a constant 65$^{o}$F.
     c. At what time was the corpse 98.6$^{o}$F? i.e. what was the time of death?
 
 ```{code-cell} ipython3
+T_an=lambda t:65 +(85-65)*np.exp(-0.444*t)
+T_an(1000)
+t=np.linspace(0,5)
+plt.plot(t,T_an(t),'k',label='analytical equation')
+for N in [5,10,20,50]:
+    t_n=np.linspace(0,5,N)
+    dt=t_n[1]-t_n[0]
+    T_eul=np.zeros(len(t_n))
+    T_eul[0]=85
+    for i in range(0,len(t_n)-1):
+        T_eul[i+1]=T_eul[i]-K*(T_eul[i]-65)*dt
+    plt.plot(t_n,T_eul,'s-',label="dt")
+plt.legend()
+```
+
+```{code-cell} ipython3
+
 ```
