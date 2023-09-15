@@ -87,5 +87,30 @@ plt.legend()
 ```
 
 ```{code-cell} ipython3
+def predict_temp(tod):
+    t=np.linspace(0,tod,100)
+    dt=t[1]-t[0]
+    T=np.zeros(len(t))
+    T[0]=98.6
+    for i in range(1,len(t)):
+        T[i]=T[i-1]-K*(T[i-1]-65)*dt
+    return 85-T[-1]
+from scipy.optimize import fsolve
+tod_sol=fsolve(predict_temp,1.5)
+t=np.linspace(0,tod_sol,100)
+dt=t[1]-t[0]
+T=np.zeros(len(t))
+T[0]=98.6
+for i in range(1,len(t)):
+    T[i]=T[i-1]-K*(T[i-1]-65)*dt
+plt.plot(t,T,'s')
+plt.plot(t,85*np.ones(len(t)))
+print(tod_sol)
+```
 
+```{code-cell} ipython3
+from datetime import timedelta
+from datetime import datetime
+found=datetime.fromisoformat('2023-09-12 11:00:00')
+time_delta=timedelta(weeks=0,days=0,hours=1.5567)
 ```
